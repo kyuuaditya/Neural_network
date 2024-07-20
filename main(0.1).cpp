@@ -1,36 +1,30 @@
 #include <iostream>
 using namespace std;
 
-float apx(float value)
-{
+float apx(float value) {
     float a = value / (1 + abs(value));
     return a;
 }
 
-float derip(float value)
-{
+float derip(float value) {
     float a = 1 / ((1 + abs(value)) * (1 + abs(value)));
     return a;
 }
 
-float derin(float value)
-{
+float derin(float value) {
     float a = 1 / ((1 - abs(value)) * (1 - abs(value)));
     return a;
 }
 
-float gen()
-{
+float gen() {
     int temp = rand() % 101 - 50;
     float num = (float)temp / 50;
     return num;
 }
 
-int main()
-{
-
+int main() {
     float cost;
-    float cost_gradient_array[500][6] = {0};
+    float cost_gradient_array[2][6] = {0};
     float temp;
 
     float z_a[3];
@@ -59,23 +53,21 @@ int main()
     // w_l2[0]=gen();
     // b_l2[0]=gen();
 
-    w_in[0] = -0.0996009;
-    b_in[0] = -0.403966;
-    w_l1[0] = 0.3;
-    b_l1[0] = -0.670784;
-    w_l2[0] = -12.5059;
-    b_l2[0] = 34.1564;
-    int iterations = 100;
+    w_in[0] = 0.56;
+    b_in[0] = 0.19;
+    w_l1[0] = 0.65;
+    b_l1[0] = -0.27;
+    w_l2[0] = 0.10;
+    b_l2[0] = 0.40;
+    int iterations = 3;
     // float result_cost[iterations];
     float result_sum = 0;
 
     int run;
-    for (int loops = 0; loops < iterations; loops++)
-    {
+    for (int loops = 0; loops < iterations; loops++) {
         run = 0;
-        cost_gradient_array[500][6] = {0};
-        for (int itr = 0; itr < 500; itr++)
-        {
+        cost_gradient_array[2][6] = {0};
+        for (int itr = 0; itr < 2; itr++) {
             // cin >> in[0];
             // in[0]=0.6;
             in[0] = gen();
@@ -106,124 +98,107 @@ int main()
 
             // ! last layer
             gradient_w[0][0] = 2 * (re[0] - y);
-            if (z_a[0] < 0)
-            {
+            if (z_a[0] < 0) {
                 gradient_w[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_w[0][1] = derip(z_a[0]);
             }
             gradient_w[0][2] = l2[0];
 
             gradient_b[0][0] = 2 * (re[0] - y);
-            if (z_a[0] < 0)
-            {
+            if (z_a[0] < 0) {
                 gradient_b[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_b[0][1] = derip(z_a[0]);
             }
 
             gradient_a[0][0] = 2 * (re[0] - y);
-            if (z_a[0] < 0)
-            {
+            if (z_a[0] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
-            gradient_a[0][2] = l2[0];
+            gradient_a[0][2] = w_l2[0];
 
-            cost_gradient_w[0] = gradient_w[0][0] * gradient_w[0][1] * gradient_w[0][2];
+            cost_gradient_w[0] =
+                gradient_w[0][0] * gradient_w[0][1] * gradient_w[0][2];
             cost_gradient_b[0] = gradient_b[0][0] * gradient_b[0][1];
-            cost_gradient_a[0] = gradient_a[0][0] * gradient_a[0][1] * gradient_a[0][2];
+            cost_gradient_a[0] =
+                gradient_a[0][0] * gradient_a[0][1] * gradient_a[0][2];
 
             // ! 2nd last layer
             // gradient_w[1][0]=2*(l2[0]-y);
-            gradient_w[1][0] = 2 * (cost_gradient_w[0] * cost_gradient_w[0]);
-            if (z_a[1] < 0)
-            {
+            // gradient_w[1][0] = 2 * (cost_gradient_w[0] * cost_gradient_w[0]);
+            gradient_w[1][0] = 2 * (cost_gradient_a[0]);
+            if (z_a[1] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
             gradient_w[1][2] = l1[0];
 
             // gradient_b[1][0]=2*(l2[0]-y);
-            gradient_b[1][0] = 2 * (cost_gradient_b[0] * cost_gradient_b[0]);
-            if (z_a[1] < 0)
-            {
+            // gradient_b[1][0] = 2 * (cost_gradient_b[0] * cost_gradient_b[0]);
+            gradient_b[1][0] = 2 * (cost_gradient_a[0]);
+            if (z_a[1] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
 
-            gradient_a[1][0] = 2 * (cost_gradient_a[0] * cost_gradient_a[0]);
-            if (z_a[0] < 0)
-            {
+            // gradient_a[1][0] = 2 * (cost_gradient_a[0] * cost_gradient_a[0]);
+            gradient_a[1][0] = 2 * (cost_gradient_a[0]);
+            if (z_a[1] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
-            gradient_a[1][2] = l1[0];
+            gradient_a[1][2] = w_l1[0];
 
-            cost_gradient_w[1] = gradient_w[1][0] * gradient_w[1][1] * gradient_w[1][2];
+            cost_gradient_w[1] =
+                gradient_w[1][0] * gradient_w[1][1] * gradient_w[1][2];
             cost_gradient_b[1] = gradient_b[1][0] * gradient_b[1][1];
-            cost_gradient_a[1] = gradient_a[1][0] * gradient_a[1][1] * gradient_a[1][2];
+            cost_gradient_a[1] =
+                gradient_a[1][0] * gradient_a[1][1] * gradient_a[1][2];
 
             // ! 3
-            gradient_w[2][0] = 2 * (cost_gradient_w[1] * cost_gradient_w[1]);
-            if (z_a[2] < 0)
-            {
+            // gradient_w[2][0] = 2 * (cost_gradient_w[1] * cost_gradient_w[1]);
+            gradient_w[2][0] = 2 * (cost_gradient_a[1]);
+            if (z_a[2] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
             gradient_w[2][2] = in[0];
 
-            gradient_b[2][0] = 2 * (cost_gradient_b[1] * cost_gradient_b[1]);
-            if (z_a[2] < 0)
-            {
+            // gradient_b[2][0] = 2 * (cost_gradient_b[1] * cost_gradient_b[1]);
+            gradient_b[2][0] = 2 * (cost_gradient_a[1]);
+            if (z_a[2] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
 
-            gradient_a[2][0] = 2 * (cost_gradient_a[1] * cost_gradient_a[1]);
-            if (z_a[0] < 0)
-            {
+            // gradient_a[2][0] = 2 * (cost_gradient_a[1] * cost_gradient_a[1]);
+            gradient_a[2][0] = 2 * (cost_gradient_a[1]);
+            if (z_a[2] < 0) {
                 gradient_a[0][1] = derin(z_a[0]);
-            }
-            else
-            {
+            } else {
                 gradient_a[0][1] = derip(z_a[0]);
             }
-            gradient_a[2][2] = in[0];
+            gradient_a[2][2] = w_in[0];
 
-            cost_gradient_w[2] = gradient_w[2][0] * gradient_w[2][1] * gradient_w[2][2];
+            cost_gradient_w[2] =
+                gradient_w[2][0] * gradient_w[2][1] * gradient_w[2][2];
             cost_gradient_b[2] = gradient_b[2][0] * gradient_b[2][1];
-            cost_gradient_a[2] = gradient_a[2][0] * gradient_a[2][1] * gradient_a[2][2];
+            cost_gradient_a[2] =
+                gradient_a[2][0] * gradient_a[2][1] * gradient_a[2][2];
 
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 cost_gradient_array[run][i] = cost_gradient_b[i];
             }
 
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 cost_gradient_array[run][i + 3] = cost_gradient_w[i];
             }
 
@@ -235,31 +210,29 @@ int main()
         }
         float sum[6] = {0};
         float average_cost[6];
-        for (int i = 0; i < run + 1; i++)
-        {
-            for (int j = 0; j < 6; j++)
-            {
+        for (int i = 0; i < run + 1; i++) {
+            for (int j = 0; j < 6; j++) {
                 sum[j] += cost_gradient_array[i][j];
             }
         }
-        for (int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
             average_cost[i] = sum[i] / (run + 1);
         }
-        for (int i = 0; i < 6; i++)
-        {
+        for (int i = 0; i < 6; i++) {
             // cout << average_cost[i] << endl;
         }
-        cout << w_in[0] << " " << b_in[0] << " " << w_l1[0] << " " << b_l1[0] << " " << w_l2[0] << " " << b_l2[0] << endl;
-        w_in[0] = w_in[0] - average_cost[5];
-        b_in[0] = b_in[0] - average_cost[2];
-        w_l1[0] = w_l1[0] - average_cost[4];
-        w_l2[0] = w_l2[0] - average_cost[3];
-        b_l1[0] = b_l1[0] - average_cost[1];
-        b_l2[0] = b_l2[0] - average_cost[0];
+        cout << w_in[0] << " " << b_in[0] << " " << w_l1[0] << " " << b_l1[0]
+             << " " << w_l2[0] << " " << b_l2[0] << endl;
+        w_in[0] = w_in[0] + average_cost[5];
+        b_in[0] = b_in[0] + average_cost[2];
+        w_l1[0] = w_l1[0] + average_cost[4];
+        w_l2[0] = w_l2[0] + average_cost[3];
+        b_l1[0] = b_l1[0] + average_cost[1];
+        b_l2[0] = b_l2[0] + average_cost[0];
         int run = 0;
-        cout << result_sum / 500 << endl;
+        cout << result_sum / 5 << endl;
         result_sum = 0;
     }
-    cout << w_in[0] << " " << b_in[0] << " " << w_l1[0] << " " << b_l1[0] << " " << w_l2[0] << " " << b_l2[0] << endl;
+    cout << w_in[0] << " " << b_in[0] << " " << w_l1[0] << " " << b_l1[0] << " "
+         << w_l2[0] << " " << b_l2[0] << endl;
 }
