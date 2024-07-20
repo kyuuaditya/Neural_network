@@ -29,9 +29,9 @@ float generate_random() {
 
 int main() {
     // set number of times to train full set.
-    int iterations = 10;
-    float rate = 0.1;
-    int examples = 10;
+    int iterations = 100;
+    float rate = 100;
+    int examples = 1000;
 
     // setting size of layers.
     int input_size = 8;
@@ -306,10 +306,10 @@ int main() {
         }
         float average_gradient[total_values] = {0};
         for (int i = 0; i < total_values; i++) {
-            average_gradient[i] = (rate * sum_gradient[i]) / examples;
+            average_gradient[i] = ((rate / 100) * sum_gradient[i]) / examples;
             // cout << average_gradient[i] << " ";
         }
-        cout << endl;
+        // cout << endl;
         int num = 0;
         for (int i = 0; i < input_size; i++) {
             for (int j = 0; j < layer1_size; j++) {
@@ -344,5 +344,6 @@ int main() {
             gradient_bias_op[j] = gradient_bias_op[j] - average_gradient[num];
             num++;
         }
+        rate--;
     }
 }

@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int func(float value) {
+double func(double value) {
     if (value > 0) {
         return value;
     } else {
@@ -15,14 +15,16 @@ int main() {
     double rate_b = 1000;
     double input;
     double output;
-    double weight = 2.08708;
-    double bias = -0.0705434;
+    double weight = 2.00072;
+    double bias = -0.00476901;
     double intermediate;
     double cost;
+    for(int k=0;k<100;k++){
+    double sum_cost = 0;
     for (int j = 0; j < 1000; j++) {
+        sum_cost=0;
         double sum_w = 0;
         double sum_b = 0;
-        double sum_cost = 0;
         double sum_a = 0;
         for (int i = 0; i < 1000; i++) {
             input = (double)(rand() % 101) / 10;
@@ -42,12 +44,11 @@ int main() {
             sum_b += b;
             sum_a += a;
         }
-        cout << "average cost: " << sum_cost / 1000 << endl;
         double gradient_w = sum_w / 1000;
         double gradient_b = sum_b / 1000;
         // double gradient_a = sum_a / 10000;
-        weight = weight + gradient_w * rate_w / 1000000000000;
-        bias = bias + gradient_b * rate_b / 1000000000000;
+        weight = weight + gradient_w * rate_w / 1000000;
+        bias = bias + gradient_b * rate_b / 1000000;
         // cout << gradient_w << " " << gradient_b << " " << gradient_a <<
         // endl; cout << weight << " " << bias << endl;
         // rate_w = rate_w / 10;
@@ -55,5 +56,9 @@ int main() {
         rate_b--;
     }
 
+    cout << "average cost: " << sum_cost / 1000 << endl;
     cout << weight << " " << bias << endl;
+    rate_w=1000;
+    rate_b=1000;
+    }
 }
