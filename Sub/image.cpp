@@ -11,7 +11,7 @@ int main() {
     int width = 800;
     int radius = 200;
     CImg<unsigned char> img(width, height, 1, 3);
-    CImgDisplay show(img, "image");
+    // CImgDisplay show(img, "image");
     img.fill(0);
     int centrey = height / 2;
     int centrex = width / 2;
@@ -24,9 +24,9 @@ int main() {
         }
     }
     CImg<unsigned char> final(10, 10, 1, 3);
-    CImgDisplay show2(final, "why");
+    // CImgDisplay show2(final, "why");
 
-    for (int yo = 0; yo < 100; yo++) {
+    for (int yo = 0; yo < 1; yo++) {
         // while (1) {
         img.fill(0);
         final.fill(0);
@@ -57,13 +57,13 @@ int main() {
             }
             // cout << endl;
         }
-        img.display(show);
-        final.display(show2);
-        show.wait(1);
+        // img.display(show);
+        // final.display(show2);
+        // show.wait(1000);
         final.save("img.png");
     }
-    while (!show.is_closed() && !show.is_closed()) {
-        img.display(show);
-        final.display(show2);
-    }
+    // while (!show.is_closed() && !show.is_closed()) {
+    //     img.display(show);
+    //     final.display(show2);
+    // }
 }
